@@ -1,57 +1,868 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-  <title>Moss信息共享平台</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moss信息共享平台 - 流浪地球同人社区</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', 'Microsoft YaHei', sans-serif;
+      scroll-behavior: smooth; 
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: linear-gradient(#0c1a2d, #1c3b5a, #2b1055);
+      color: #fff;
+    }
+
+    /* 导航栏样式 */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 20px 100px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10000;
+      background: rgba(12, 26, 45, 0.8);
+      backdrop-filter: blur(10px);
+      transition: 0.5s;
+    }
+
+    header.scrolled {
+      padding: 15px 80px;
+      background: rgba(10, 20, 35, 0.95);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    header .logo {
+      display: flex;
+      align-items: center;
+      color: #4fc3f7;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 1.8em;
+      letter-spacing: 1px;
+    }
+
+    header .logo img {
+      height: 50px;
+      margin-right: 15px;
+      filter: drop-shadow(0 0 5px rgba(79, 195, 247, 0.7));
+    }
+
+    header ul {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    header ul li {
+      list-style: none;
+      margin-left: 25px;
+    }
+
+    header ul li a {
+      text-decoration: none;
+      padding: 8px 18px;
+      color: #e0f7fa;
+      border-radius: 25px;
+      font-size: 1.1em;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+    }
+
+    header ul li a i {
+      margin-right: 8px;
+      font-size: 1.2em;
+    }
+
+    header ul li a:hover,
+    header ul li a.active {
+      background: rgba(79, 195, 247, 0.2);
+      color: #4fc3f7;
+      box-shadow: 0 0 15px rgba(79, 195, 247, 0.4);
+    }
+
+    /* 英雄区域样式 */
+    section {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      padding: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    section::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 150px;
+      background: linear-gradient(to top, #1c0522, transparent);
+      z-index: 1000;
+    }
+
+    section img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    section img#stars {
+      animation: twinkle 8s infinite ease-in-out;
+    }
+
+    section img#moon {
+      mix-blend-mode: screen;
+      animation: float 6s infinite ease-in-out;
+    }
+
+    section img#mountains_behind {
+      z-index: 8;
+    }
+
+    section img#mountains_front {
+      z-index: 10;
+    }
+
+    section img#earth {
+      width: 400px;
+      height: 400px;
+      top: 50%;
+      left: 10%;
+      transform: translateY(-50%);
+      animation: rotate 40s infinite linear;
+      z-index: 7;
+    }
+
+    #text {
+      position: absolute;
+      right: -350px;
+      color: #fff;
+      white-space: nowrap;
+      font-size: 7.5vw;
+      z-index: 9;
+      text-shadow: 0 0 10px rgba(79, 195, 247, 0.8);
+    }
+
+    #btn {
+      text-decoration: none;
+      display: inline-block;
+      padding: 12px 40px;
+      border-radius: 40px;
+      background: linear-gradient(45deg, #4fc3f7, #29b6f6);
+      color: #0c1a2d;
+      font-size: 1.5em;
+      font-weight: 600;
+      z-index: 9;
+      transform: translateY(100px);
+      border: none;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      box-shadow: 0 5px 15px rgba(41, 182, 246, 0.4);
+    }
+
+    #btn:hover {
+      transform: translateY(100px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(41, 182, 246, 0.6);
+    }
+
+    #btn i {
+      margin-left: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    #btn:hover i {
+      transform: translateX(5px);
+    }
+
+    /* 内容区域样式 */
+    .sec {
+      position: relative;
+      padding: 120px 100px;
+      background: #1c0522;
+      z-index: 100;
+    }
+
+    .sec h2 {
+      font-size: 3.5em;
+      margin-bottom: 20px;
+      color: #4fc3f7;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    .sec h2:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(90deg, #4fc3f7, #29b6f6);
+      border-radius: 2px;
+    }
+
+    .sec p {
+      font-size: 1.1em;
+      color: #e0f7fa;
+      line-height: 1.8;
+      margin-bottom: 25px;
+      max-width: 900px;
+    }
+
+    /* 卡片容器样式 */
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 30px;
+      margin: 50px 0;
+    }
+
+    .card {
+      background: rgba(41, 57, 89, 0.5);
+      border-radius: 15px;
+      padding: 30px;
+      flex: 1;
+      min-width: 300px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(79, 195, 247, 0.2);
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      border-color: rgba(79, 195, 247, 0.4);
+    }
+
+    .card h3 {
+      color: #4fc3f7;
+      font-size: 1.8em;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .card h3 i {
+      margin-right: 10px;
+      font-size: 1.4em;
+    }
+
+    .card ul {
+      list-style: none;
+      margin: 20px 0;
+    }
+
+    .card ul li {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+    }
+
+    .card ul li:last-child {
+      border-bottom: none;
+    }
+
+    .card ul li i {
+      color: #4fc3f7;
+      margin-right: 10px;
+      font-size: 0.9em;
+    }
+
+    /* 时间线样式 */
+    .timeline {
+      position: relative;
+      max-width: 1000px;
+      margin: 50px auto;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, #4fc3f7, #29b6f6);
+      left: 50%;
+      margin-left: -2px;
+      border-radius: 2px;
+    }
+
+    .timeline-item {
+      padding: 20px 40px;
+      position: relative;
+      width: 50%;
+      box-sizing: border-box;
+    }
+
+    .timeline-item:nth-child(odd) {
+      left: 0;
+    }
+
+    .timeline-item:nth-child(even) {
+      left: 50%;
+    }
+
+    .timeline-content {
+      padding: 20px;
+      background: rgba(41, 57, 89, 0.7);
+      border-radius: 10px;
+      border: 1px solid rgba(79, 195, 247, 0.3);
+    }
+
+    .timeline-content h4 {
+      color: #4fc3f7;
+      margin-bottom: 10px;
+      font-size: 1.4em;
+    }
+
+    /* 社区部分样式 */
+    .community-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 25px;
+      margin: 50px 0;
+    }
+
+    .community-card {
+      background: rgba(41, 57, 89, 0.5);
+      border-radius: 15px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      border: 1px solid rgba(79, 195, 247, 0.2);
+    }
+
+    .community-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(79, 195, 247, 0.4);
+    }
+
+    .community-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .community-card-content {
+      padding: 20px;
+    }
+
+    .community-card h3 {
+      color: #4fc3f7;
+      margin-bottom: 10px;
+    }
+
+    /* 页脚样式 */
+    footer {
+      background: #0a1425;
+      padding: 60px 100px 30px;
+      position: relative;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .footer-column {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .footer-column h3 {
+      color: #4fc3f7;
+      margin-bottom: 20px;
+      font-size: 1.4em;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .footer-column h3:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, #4fc3f7, #29b6f6);
+      border-radius: 2px;
+    }
+
+    .footer-column p, 
+    .footer-column li {
+      color: #b3e5fc;
+      margin-bottom: 10px;
+      line-height: 1.7;
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column ul li {
+      display: flex;
+      align-items: center;
+    }
+
+    .footer-column ul li i {
+      color: #4fc3f7;
+      margin-right: 10px;
+      width: 20px;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .social-links a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: rgba(79, 195, 247, 0.1);
+      color: #4fc3f7;
+      font-size: 1.2em;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      background: rgba(79, 195, 247, 0.3);
+      transform: translateY(-5px);
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #81d4fa;
+      font-size: 0.9em;
+    }
+
+    /* 动画 */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes rotate {
+      0% { transform: translateY(-50%) rotate(0deg); }
+      100% { transform: translateY(-50%) rotate(360deg); }
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 992px) {
+      header, header.scrolled {
+        padding: 15px 50px;
+      }
+      
+      section {
+        padding: 100px 50px;
+      }
+      
+      #text {
+        font-size: 8vw;
+      }
+      
+      .sec {
+        padding: 80px 50px;
+      }
+      
+      .timeline::before {
+        left: 30px;
+      }
+      
+      .timeline-item {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 0;
+      }
+      
+      .timeline-item:nth-child(even) {
+        left: 0;
+      }
+      
+      footer {
+        padding: 40px 50px 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header, header.scrolled {
+        padding: 15px 30px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      header ul {
+        margin-top: 20px;
+        flex-wrap: wrap;
+      }
+      
+      header ul li {
+        margin: 5px;
+      }
+      
+      section {
+        padding: 100px 30px;
+      }
+      
+      #text {
+        font-size: 10vw;
+        right: -200px;
+      }
+      
+      .sec {
+        padding: 60px 30px;
+      }
+      
+      .sec h2 {
+        font-size: 2.5em;
+      }
+      
+      footer {
+        padding: 30px 30px 15px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header ul li a {
+        padding: 6px 12px;
+        font-size: 0.9em;
+      }
+      
+      #btn {
+        padding: 10px 30px;
+        font-size: 1.2em;
+      }
+      
+      section img#earth {
+        width: 250px;
+        height: 250px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <img src="./LOGO.png" id="stars">
-    <!-- <a href="#" class="logo">Moss信息共享平台</a> -->
+  <header id="header">
+    <a href="#" class="logo">
+      <img src="https://cdn-icons-png.flaticon.com/512/7188/7188801.png" alt="Moss Logo">
+      <span>Moss信息共享平台</span>
+    </a>
     <ul>
-      <li><a href="#sec" class="active">Home</a></li>
-      <li><a href="#about">关于</a></li>
-      <li><a href="https://information.mossgov.tech">信息港</a></li>
-      <li><a href="https://moss.furrycdn.cn/">主页</a></li>
+      <li><a href="#sec" class="active"><i class="fas fa-home"></i>首页</a></li>
+      <li><a href="#about"><i class="fas fa-info-circle"></i>关于</a></li>
+      <li><a href="#community"><i class="fas fa-users"></i>社区</a></li>
+      <li><a href="#resources"><i class="fas fa-database"></i>资源库</a></li>
+      <li><a href="https://information.mossgov.tech" target="_blank"><i class="fas fa-satellite"></i>信息港</a></li>
     </ul>
   </header>
+  
   <section>
-    <img src="images/stars.png" id="stars">
-    <img src="images/moon.png" id="moon">
-    <img src="images/mountains_behind.png" id="mountains_behind">
+    <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" id="stars">
+    <img src="https://images.unsplash.com/photo-1494022299300-899b96e49893?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" id="moon">
+    <img src="https://images.unsplash.com/photo-1505506874110-6a7a69069a08?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" id="mountains_behind">
+    <img src="https://cdn.pixabay.com/photo/2016/11/21/17/44/arches-national-park-1846759_1280.jpg" id="mountains_front">
+    <img src="https://cdn.pixabay.com/photo/2011/12/13/14/39/earth-11048_1280.jpg" id="earth">
     <h2 id="text">Moss信息共享平台</h2>
-    <a href="#sec" id="btn">进入浏览</a>
-    <img src="images/mountains_front.png" id="mountains_front">
+    <a href="#sec" id="btn">进入浏览 <i class="fas fa-arrow-down"></i></a>
   </section>
+  
   <div class="sec" id="sec">
-    <h2>爱是穿越一切的力量</h2>
-    <p>啦啦啦</p>
+    <h2>流浪地球计划</h2>
+    <p>流浪地球计划是人类历史上最宏伟的星际移民工程，旨在将地球作为飞船，驶向4.2光年外的新家园。这一计划需要全人类团结协作，共同面对前所未有的挑战。</p>
+    
+    <div class="cards-container">
+      <div class="card">
+        <h3><i class="fas fa-fire"></i>行星发动机</h3>
+        <p>遍布全球的12000座行星发动机，每座高达11公里，为地球提供持续动力，推动地球离开太阳系。</p>
+        <ul>
+          <li><i class="fas fa-cog"></i>推进功率：150万亿吨TNT当量/秒</li>
+          <li><i class="fas fa-bolt"></i>能源类型：重元素聚变</li>
+          <li><i class="fas fa-globe-asia"></i>分布位置：亚洲和美洲大陆</li>
+        </ul>
+      </div>
+      
+      <div class="card">
+        <h3><i class="fas fa-satellite"></i>领航员空间站</h3>
+        <p>位于地球前方的领航员国际空间站，作为地球的"灯塔"，为地球提供导航、预警和通讯服务。</p>
+        <ul>
+          <li><i class="fas fa-ruler-combined"></i>尺寸：长度50公里，直径10公里</li>
+          <li><i class="fas fa-user-astronaut"></i>乘员：常驻人员10000名</li>
+          <li><i class="fas fa-microchip"></i>AI系统：MOSS（550W）</li>
+        </ul>
+      </div>
+      
+      <div class="card">
+        <h3><i class="fas fa-route"></i>航行路线</h3>
+        <p>地球将经历五个阶段航行，历时2500年，最终抵达比邻星轨道，成为其行星系统中的一员。</p>
+        <ul>
+          <li><i class="fas fa-stopwatch"></i>刹车时代（42年）</li>
+          <li><i class="fas fa-arrows-alt-h"></i>逃逸时代（380年）</li>
+          <li><i class="fas fa-space-shuttle"></i>流浪时代（约2000年）</li>
+        </ul>
+      </div>
+    </div>
   </div>
+  
   <div class="sec" id="about">
-    <h2>关于我们</h2>
-    <p>Moss信息共享平台 - 非官方同人网站 - Q群：547489423 | Copyright ©️ 550W/MOSS 2058.</p>
+    <h2>关于Moss信息共享平台</h2>
+    <p>Moss信息共享平台是由流浪地球计划支持者和科幻爱好者共同创建的非营利性社区，旨在收集、整理和分享与流浪地球计划相关的信息、资源和创作。</p>
+    <p>我们的使命是保存人类文明的火种，传承流浪地球精神，并为所有参与者提供交流与合作的平台。</p>
+    
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <h4>2023年</h4>
+          <p>平台正式上线，首批收录了1000多份流浪地球计划相关文档和影像资料。</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <h4>2025年</h4>
+          <p>社区成员突破10万人，建立了完善的信息分类体系和审核机制。</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <h4>2027年</h4>
+          <p>获得联合政府认可，成为流浪地球计划官方指定的民间信息平台。</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <h4>2030年</h4>
+          <p>推出MOSS信息港，整合全球行星发动机实时数据与空间站状态信息。</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="cards-container">
+      <div class="card">
+        <h3><i class="fas fa-compass"></i>我们的愿景</h3>
+        <p>成为流浪地球时代最全面、最权威的信息共享平台，连接每一位地球公民，共同守护人类文明的未来。</p>
+      </div>
+      
+      <div class="card">
+        <h3><i class="fas fa-handshake"></i>加入我们</h3>
+        <p>无论你是科学家、工程师、艺术家还是普通公民，只要认同流浪地球精神，都可以成为我们社区的一员。</p>
+        <a href="#community" class="btn" style="display: inline-block; margin-top: 15px; background: rgba(79, 195, 247, 0.2); color: #4fc3f7; padding: 8px 20px; border-radius: 20px; text-decoration: none;">加入社区</a>
+      </div>
+    </div>
   </div>
-
+  
+  <div class="sec" id="community">
+    <h2>社区与创作</h2>
+    <p>流浪地球社区汇聚了全球各地的科幻爱好者、科学家、艺术家和思想家。在这里，你可以分享创作、参与讨论、获取最新资讯。</p>
+    
+    <div class="community-grid">
+      <div class="community-card">
+        <img src="https://images.unsplash.com/photo-1505506874110-6a7a69069a08?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="同人作品">
+        <div class="community-card-content">
+          <h3>同人艺术创作</h3>
+          <p>欣赏社区艺术家创作的流浪地球主题画作、3D模型和概念设计。</p>
+        </div>
+      </div>
+      
+      <div class="community-card">
+        <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="科技讨论">
+        <div class="community-card-content">
+          <h3>科技与理论</h3>
+          <p>探讨行星发动机原理、生态圈维持技术和星际航行物理难题。</p>
+        </div>
+      </div>
+      
+      <div class="community-card">
+        <img src="https://images.unsplash.com/photo-1494022299300-899b96e49893?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="故事分享">
+        <div class="community-card-content">
+          <h3>地下城故事</h3>
+          <p>分享地下城生活见闻、航行途中的感人故事和人类精神传承。</p>
+        </div>
+      </div>
+      
+      <div class="community-card">
+        <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Moss专题">
+        <div class="community-card-content">
+          <h3>MOSS专题研究</h3>
+          <p>分析550W人工智能系统的架构、决策逻辑与伦理挑战。</p>
+        </div>
+      </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 50px;">
+      <a href="#" class="btn" style="background: linear-gradient(45deg, #ff6b6b, #ff8e53);">浏览更多社区内容</a>
+    </div>
+  </div>
+  
+  <div class="sec" id="resources">
+    <h2>资源库</h2>
+    <p>我们收集整理了流浪地球计划相关的各类资源，包括技术文档、研究报告、影像资料和艺术作品。</p>
+    
+    <div class="cards-container">
+      <div class="card">
+        <h3><i class="fas fa-book"></i>文献资料</h3>
+        <ul>
+          <li><i class="fas fa-file-pdf"></i>行星发动机技术白皮书</li>
+          <li><i class="fas fa-file-alt"></i>地下城生态系统设计指南</li>
+          <li><i class="fas fa-book-open"></i>流浪地球编年史</li>
+          <li><i class="fas fa-file-contract"></i>联合政府宪章</li>
+        </ul>
+      </div>
+      
+      <div class="card">
+        <h3><i class="fas fa-video"></i>影像资料</h3>
+        <ul>
+          <li><i class="fas fa-film"></i>行星发动机点火仪式</li>
+          <li><i class="fas fa-satellite-dish"></i>领航员空间站建造全程</li>
+          <li><i class="fas fa-microscope"></i>重元素聚变原理科普</li>
+          <li><i class="fas fa-globe"></i>地球轨迹模拟系统</li>
+        </ul>
+      </div>
+      
+      <div class="card">
+        <h3><i class="fas fa-download"></i>下载中心</h3>
+        <ul>
+          <li><i class="fas fa-cogs"></i>MOSS模拟器</li>
+          <li><i class="fas fa-map"></i>地下城地图集</li>
+          <li><i class="fas fa-rocket"></i>行星发动机3D模型</li>
+          <li><i class="fas fa-mobile-alt"></i>流浪地球社区APP</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <footer>
+    <div class="footer-content">
+      <div class="footer-column">
+        <h3>关于MOSS平台</h3>
+        <p>Moss信息共享平台是流浪地球计划支持者建立的开放社区，致力于保存和传播人类文明的智慧结晶。</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-weibo"></i></a>
+          <a href="#"><i class="fab fa-weixin"></i></a>
+          <a href="#"><i class="fab fa-qq"></i></a>
+          <a href="#"><i class="fab fa-github"></i></a>
+        </div>
+      </div>
+      
+      <div class="footer-column">
+        <h3>快速链接</h3>
+        <ul>
+          <li><i class="fas fa-chevron-right"></i><a href="#sec">首页</a></li>
+          <li><i class="fas fa-chevron-right"></i><a href="#about">关于我们</a></li>
+          <li><i class="fas fa-chevron-right"></i><a href="#community">社区创作</a></li>
+          <li><i class="fas fa-chevron-right"></i><a href="#resources">资源下载</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-column">
+        <h3>联系我们</h3>
+        <ul>
+          <li><i class="fas fa-envelope"></i>contact@mossgov.tech</li>
+          <li><i class="fas fa-map-marker-alt"></i>领航员空间站信息部</li>
+          <li><i class="fas fa-satellite"></i>通讯频率：7.83GHz</li>
+          <li><i class="fas fa-user-astronaut"></i>社区协调员：刘培强中校</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="copyright">
+      <p>本平台内容根据《流浪地球法》第42条进行信息共享 | 地球联合政府信息部监制</p>
+      <p>Copyright © 2023-2500 Moss信息共享平台 | 为了人类文明的延续</p>
+    </div>
+  </footer>
+  
   <script>
-    let stars = document.getElementById('stars')
-    let moon = document.getElementById('moon')
-    let mountains_behind = document.getElementById('mountains_behind')
-    let text = document.getElementById('text')
-    let btn = document.getElementById('btn')
-    let mountains_front = document.getElementById('mountains_front')
-    let header = document.querySelector('header')
-
+    let stars = document.getElementById('stars');
+    let moon = document.getElementById('moon');
+    let mountains_behind = document.getElementById('mountains_behind');
+    let text = document.getElementById('text');
+    let btn = document.getElementById('btn');
+    let mountains_front = document.getElementById('mountains_front');
+    let header = document.getElementById('header');
+    
     window.addEventListener('scroll', function(){
       let value = window.scrollY;
-      stars.style.left = value * 0.25 + 'px'
-      moon.style.top = value * 1.05 + 'px'
-      mountains_behind.style.top = value * 0.5 + 'px'
-      mountains_front.style.top = value * 0 + 'px'
-      text.style.marginRight = value * 4 + 'px'
-      text.style.marginTop = value * 1.5 + 'px'
-      btn.style.marginTop = value * 1.5 + 'px'
-      header.style.top = value * 0.5 + 'px'
-    })
+      stars.style.left = value * 0.25 + 'px';
+      moon.style.top = value * 1.05 + 'px';
+      mountains_behind.style.top = value * 0.5 + 'px';
+      mountains_front.style.top = value * 0 + 'px';
+      text.style.marginRight = value * 4 + 'px';
+      text.style.marginTop = value * 1.5 + 'px';
+      btn.style.marginTop = value * 1.5 + 'px';
+      
+      // 添加导航栏滚动效果
+      if (value > 100) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+    
+    // 导航栏激活状态
+    const sections = document.querySelectorAll('.sec');
+    const navLinks = document.querySelectorAll('header ul li a');
+    
+    window.addEventListener('scroll', () => {
+      let current = '';
+      
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        
+        if (pageYOffset >= (sectionTop - 300)) {
+          current = section.getAttribute('id');
+        }
+      });
+      
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href').includes(current)) {
+          link.classList.add('active');
+        }
+      });
+    });
+    
+    // 地球旋转动画
+    const earth = document.getElementById('earth');
+    let rotation = 0;
+    
+    setInterval(() => {
+      rotation += 0.5;
+      earth.style.transform = `translateY(-50%) rotate(${rotation}deg)`;
+    }, 50);
   </script>
 </body>
 </html>
